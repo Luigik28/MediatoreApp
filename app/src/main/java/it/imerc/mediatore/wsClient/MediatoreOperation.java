@@ -93,7 +93,7 @@ public abstract class MediatoreOperation<T> {
 
     private static final String WSDL_TARGET_NAMESPACE = "http://service.iMerc.it";
 
-    private static String serverUrl = "http://192.168.1.50:8080";
+    private static String serverUrl = "http://192.168.1.59:8080";
 
     private static final String SOAP_ADDRESS_NO_URL = "/Mediatore/services/GameService?wsdl";
 
