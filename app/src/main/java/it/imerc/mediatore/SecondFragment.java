@@ -77,7 +77,7 @@ public class SecondFragment extends Fragment {
                 v[0] = response;
                 final Integer id = v[0];
                 final Giocatore[] giocatores = new Giocatore[4];
-                new AddGiocatoreOperation().doCall(id, "b", new MediatoreOperation.GiocatoreCallback() {
+                new AddGiocatoreOperation().doCall(id+1, "b", new MediatoreOperation.GiocatoreCallback() {
                     @Override
                     public void onResponse(Giocatore response) {
                         new AddGiocatoreOperation().doCall(id, "c", new MediatoreOperation.GiocatoreCallback() {
@@ -112,6 +112,12 @@ public class SecondFragment extends Fragment {
                                 });
                             }
                         });
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        super.onError(message);
+                        Toast.makeText(SecondFragment.this.requireContext(),message,Toast.LENGTH_LONG).show();
                     }
                 });
             }

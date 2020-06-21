@@ -26,7 +26,7 @@ public abstract class MediatoreOperation<T> {
 
         T parseRequest(AttributeContainer attributeContainer);
 
-        void onError();
+        void onError(String message);
     }
 
     public abstract static class IntegerCallback implements SoapCallback<Integer> {
@@ -34,7 +34,7 @@ public abstract class MediatoreOperation<T> {
         abstract public void onResponse(Integer response);
 
         @Override
-        public void onError() {
+        public void onError(String message) {
 
         }
 
@@ -50,7 +50,7 @@ public abstract class MediatoreOperation<T> {
         abstract public void onResponse(Boolean response);
 
         @Override
-        public void onError() {
+        public void onError(String message) {
 
         }
 
@@ -66,7 +66,7 @@ public abstract class MediatoreOperation<T> {
         abstract public void onResponse(Mazzo response);
 
         @Override
-        public void onError() {
+        public void onError(String message) {
 
         }
 
@@ -81,7 +81,7 @@ public abstract class MediatoreOperation<T> {
         abstract public void onResponse(Giocatore response);
 
         @Override
-        public void onError() {
+        public void onError(String message) {
 
         }
 
@@ -147,8 +147,10 @@ public abstract class MediatoreOperation<T> {
             } catch (SoapFault fault) {
                 fault.printStackTrace();
                 result = new SoapObject();
-                result.addAttribute("exception", fault.faultcode);
-                result.addAttribute("message", fault.faultstring);
+                String exception = fault.faultstring.split(":")[0];
+                String message = fault.faultstring.split(":")[1];
+                result.addAttribute("exception", exception);
+                result.addAttribute("message", message);
             } catch (IOException e) {
                 e.printStackTrace();
                 result = new SoapObject();
@@ -165,8 +167,8 @@ public abstract class MediatoreOperation<T> {
 
         @Override
         protected void onPostExecute(AttributeContainer result) {
-            if (result == null)
-                callback.onError();
+            if (result instanceof  SoapObject)
+                callback.onError(result.getAttributeAsString("message"));
             else
                 callback.onResponse(callback.parseRequest(result));
         }
