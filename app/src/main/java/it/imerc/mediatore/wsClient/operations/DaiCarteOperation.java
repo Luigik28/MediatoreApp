@@ -2,6 +2,7 @@ package it.imerc.mediatore.wsClient.operations;
 
 import it.imerc.mediatore.Game.Mazzo;
 import it.imerc.mediatore.wsClient.MediatoreOperation;
+import it.imerc.mediatore.wsClient.operations.callback.MazzoCallback;
 
 public class DaiCarteOperation extends MediatoreOperation<Mazzo> {
 

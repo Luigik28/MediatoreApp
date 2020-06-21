@@ -3,93 +3,19 @@ package it.imerc.mediatore.wsClient;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
-import com.google.gson.Gson;
-
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.AttributeContainer;
 import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import it.imerc.mediatore.Game.Giocatore;
-import it.imerc.mediatore.Game.Mazzo;
+import it.imerc.mediatore.wsClient.operations.callback.SoapCallback;
 
 public abstract class MediatoreOperation<T> {
-
-    public interface SoapCallback<T> {
-        void onResponse(T response);
-
-        T parseRequest(AttributeContainer attributeContainer);
-
-        void onError(String message);
-    }
-
-    public abstract static class IntegerCallback implements SoapCallback<Integer> {
-        @Override
-        abstract public void onResponse(Integer response);
-
-        @Override
-        public void onError(String message) {
-
-        }
-
-        @Override
-        public Integer parseRequest(AttributeContainer attributeContainer) {
-            SoapPrimitive soapPrimitive = (SoapPrimitive) attributeContainer;
-            return Integer.valueOf(soapPrimitive.getValue().toString());
-        }
-    }
-
-    public abstract static class BooleanCallback implements SoapCallback<Boolean> {
-        @Override
-        abstract public void onResponse(Boolean response);
-
-        @Override
-        public void onError(String message) {
-
-        }
-
-        @Override
-        public Boolean parseRequest(AttributeContainer attributeContainer) {
-            SoapPrimitive soapPrimitive = (SoapPrimitive) attributeContainer;
-            return Boolean.valueOf(soapPrimitive.getValue().toString());
-        }
-    }
-
-    public abstract static class MazzoCallback implements SoapCallback<Mazzo> {
-        @Override
-        abstract public void onResponse(Mazzo response);
-
-        @Override
-        public void onError(String message) {
-
-        }
-
-        @Override
-        public Mazzo parseRequest(AttributeContainer attributeContainer) {
-            return new Gson().fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Mazzo.class);
-        }
-    }
-
-    public abstract static class GiocatoreCallback implements SoapCallback<Giocatore> {
-        @Override
-        abstract public void onResponse(Giocatore response);
-
-        @Override
-        public void onError(String message) {
-
-        }
-
-        @Override
-        public Giocatore parseRequest(AttributeContainer attributeContainer) {
-            return new Gson().fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Giocatore.class);
-        }
-    }
 
     private static final String WSDL_TARGET_NAMESPACE = "http://service.iMerc.it";
 

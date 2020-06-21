@@ -47,6 +47,10 @@ import it.imerc.mediatore.wsClient.operations.DaiCarteOperation;
 import it.imerc.mediatore.wsClient.operations.GetMazzoGiocatore;
 import it.imerc.mediatore.wsClient.operations.Ping;
 import it.imerc.mediatore.wsClient.operations.SetMonteOperation;
+import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
+import it.imerc.mediatore.wsClient.operations.callback.GiocatoreCallback;
+import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
+import it.imerc.mediatore.wsClient.operations.callback.MazzoCallback;
 
 public class SecondFragment extends Fragment {
 
@@ -71,25 +75,25 @@ public class SecondFragment extends Fragment {
         final LinearLayout layout = root.findViewById(R.id.image_container);
         final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         final Integer[] v = new Integer[1];
-        new CreaPartitaOperation().doCall("a", new MediatoreOperation.IntegerCallback() {
+        new CreaPartitaOperation().doCall("a", new IntegerCallback() {
             @Override
             public void onResponse(Integer response) {
                 v[0] = response;
                 final Integer id = v[0];
                 final Giocatore[] giocatores = new Giocatore[4];
-                new AddGiocatoreOperation().doCall(id+1, "b", new MediatoreOperation.GiocatoreCallback() {
+                new AddGiocatoreOperation().doCall(id, "b", new GiocatoreCallback() {
                     @Override
                     public void onResponse(Giocatore response) {
-                        new AddGiocatoreOperation().doCall(id, "c", new MediatoreOperation.GiocatoreCallback() {
+                        new AddGiocatoreOperation().doCall(id, "c", new GiocatoreCallback() {
                             @Override
                             public void onResponse(Giocatore response) {
-                                new AddGiocatoreOperation().doCall(id, "d", new MediatoreOperation.GiocatoreCallback() {
+                                new AddGiocatoreOperation().doCall(id, "d", new GiocatoreCallback() {
                                     @Override
                                     public void onResponse(Giocatore response) {
-                                        new SetMonteOperation().doCall(id, true, new MediatoreOperation.BooleanCallback() {
+                                        new SetMonteOperation().doCall(id, true, new BooleanCallback() {
                                             @Override
                                             public void onResponse(Boolean response) {
-                                                new DaiCarteOperation().doCall(id, new MediatoreOperation.MazzoCallback() {
+                                                new DaiCarteOperation().doCall(id, new MazzoCallback() {
                                                     @Override
                                                     public void onResponse(Mazzo response) {
                                                         mio[0] = response;

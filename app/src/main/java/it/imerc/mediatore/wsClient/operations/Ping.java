@@ -1,6 +1,7 @@
 package it.imerc.mediatore.wsClient.operations;
 
 import it.imerc.mediatore.wsClient.MediatoreOperation;
+import it.imerc.mediatore.wsClient.operations.callback.SoapCallback;
 
 public class Ping<U> extends MediatoreOperation<String> {
 

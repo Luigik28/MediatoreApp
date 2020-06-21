@@ -2,6 +2,7 @@ package it.imerc.mediatore.wsClient.operations;
 
 import it.imerc.mediatore.Game.Giocatore;
 import it.imerc.mediatore.wsClient.MediatoreOperation;
+import it.imerc.mediatore.wsClient.operations.callback.GiocatoreCallback;
 
 public class AddGiocatoreOperation extends MediatoreOperation<Giocatore> {
 
