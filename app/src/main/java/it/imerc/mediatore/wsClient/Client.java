@@ -7,13 +7,13 @@ import org.ksoap2.transport.HttpTransportSE;
 
 public class Client {
 
-    private static final String SOAP_ACTION = "http://192.168.1.50:8080/Mediatore/services/GameService/ciao";
+    private static final String SOAP_ACTION = "http://mediatore-sviluppo.ddns.net/Mediatore/services/GameService/ciao";
 
     private static final String OPERATION_NAME = "ciao";
 
     private static final String WSDL_TARGET_NAMESPACE = "http://service.iMerc.it";
 
-    private static final String SOAP_ADDRESS = "http://192.168.1.50:8080/Mediatore/services/GameService?wsdl";
+    private static final String SOAP_ADDRESS = "http://mediatore-sviluppo.ddns.net/Mediatore/services/GameService?wsdl";
 
 
     public Client() {
