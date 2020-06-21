@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class Giocatore implements Serializable {
 
     private static final long serialVersionUID = 8197106193737329087L;
-    public Mazzo mano;
-    public String nome;
+    private Mazzo mano;
+    private String nome;
 
     public Giocatore() {
         this.mano = new Mazzo();

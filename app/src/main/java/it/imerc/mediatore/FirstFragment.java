@@ -5,14 +5,19 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import it.imerc.mediatore.Game.GameManager;
+import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
+
 public class FirstFragment extends Fragment {
+
+    final GameManager gameManager = new GameManager();
 
     @Override
     public View onCreateView(
@@ -25,12 +30,22 @@ public class FirstFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        final ProgressBar progressBar = view.findViewById(R.id.progressBar);
+        final EditText editTextHost = view.findViewById(R.id.host);
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                //TODO: Aggiungere controlli di inizio partita prima di effettuare la chiamata (es. stringa vuota)
+                progressBar.setVisibility(View.VISIBLE);
+                final String nome = editTextHost.getText().toString();
+                gameManager.creaPartita(nome, new IntegerCallback() {
+                    @Override
+                    public void onResponse(Integer response) {
+                        NavHostFragment.findNavController(FirstFragment.this)
+                                .navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
+                    }
+                });
+
             }
         });
     }
@@ -38,15 +53,9 @@ public class FirstFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-//        if(getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//            getSupportActionBar().setDisplayShowHomeEnabled(true);
-//            getSupportActionBar().setHomeButtonEnabled(true);
-//            getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_launcher);
-//        }
     }
 
-    public ActionBar getSupportActionBar() {
-        return ((AppCompatActivity) getActivity()).getSupportActionBar();
-    }
+//    public ActionBar getSupportActionBar() {
+//        return ((AppCompatActivity) requireActivity()).getSupportActionBar();
+//    }
 }

@@ -36,6 +36,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import it.imerc.mediatore.Game.Carta;
+import it.imerc.mediatore.Game.GameManager;
 import it.imerc.mediatore.Game.Giocatore;
 import it.imerc.mediatore.Game.Mazzo;
 import it.imerc.mediatore.util.Utility;
@@ -55,6 +56,7 @@ import it.imerc.mediatore.wsClient.operations.callback.MazzoCallback;
 public class SecondFragment extends Fragment {
 
     private Activity activity;
+    private GameManager gameManager;
     final Mazzo[] mio = new Mazzo[1];
 
     @Override
@@ -68,10 +70,12 @@ public class SecondFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        draw(view);
+        gameManager = GameManager.getGameManager(getArguments());
+        Toast.makeText(requireContext(), String.valueOf(gameManager.getIdPartita()) + " " + gameManager.getHost().getNome(), Toast.LENGTH_LONG).show();
+        //draw(view);
     }
 
-    private boolean draw(View root) {
+    private boolean draw(@NonNull View root) {
         final LinearLayout layout = root.findViewById(R.id.image_container);
         final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         final Integer[] v = new Integer[1];
