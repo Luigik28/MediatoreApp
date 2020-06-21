@@ -13,5 +13,4 @@ public class CreaPartitaOperation extends MediatoreOperation<Integer> {
         addProperty("nome", nome);
         super.call(callback);
     }
-
 }

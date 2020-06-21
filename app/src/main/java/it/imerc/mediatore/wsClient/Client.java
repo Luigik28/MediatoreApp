@@ -20,7 +20,7 @@ public class Client {
         SoapObject request = new SoapObject(WSDL_TARGET_NAMESPACE,
                 OPERATION_NAME);
 
-        request.addProperty("n","valore");
+        request.addProperty("n", "valore");
 
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
                 SoapEnvelope.VER11);
@@ -42,5 +42,4 @@ public class Client {
             exception.printStackTrace();
         }
     }
-
 }

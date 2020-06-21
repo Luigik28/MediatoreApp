@@ -8,15 +8,10 @@ import java.util.Random;
 public class Mazzo implements Serializable {
 
     private static final long serialVersionUID = -2966124301631969484L;
-    private List<Carta> carteCoperte = new LinkedList<Carta>();
-    private List<Carta> carteConsegnate = new LinkedList<Carta>();
+    private List<Carta> carteCoperte = new LinkedList<>();
+    private List<Carta> carteConsegnate = new LinkedList<>();
 
-    public Mazzo() {}
-
-    public Mazzo(String bean) {
-        String[] v = bean.split(";");
-        for(String s : v)
-            carteCoperte.add(new Carta(Integer.parseInt(s)));
+    public Mazzo() {
     }
 
     public List<Carta> getCarteCoperte() {
@@ -54,13 +49,4 @@ public class Mazzo implements Serializable {
         else
             return null;
     }
-
-    public String getMazzoBean() {
-        String bean = "";
-        for(Carta c : getCarteCoperte()) {
-            bean += c.getId() + ";";
-        }
-        return bean.substring(0, bean.length()-1);
-    }
-
 }

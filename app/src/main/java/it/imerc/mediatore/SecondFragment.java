@@ -77,15 +77,15 @@ public class SecondFragment extends Fragment {
                 v[0] = response;
                 final Integer id = v[0];
                 final Giocatore[] giocatores = new Giocatore[4];
-                new AddGiocatoreOperation().doCall(id, "b", new MediatoreOperation.BooleanCallback() {
+                new AddGiocatoreOperation().doCall(id, "b", new MediatoreOperation.GiocatoreCallback() {
                     @Override
-                    public void onResponse(Boolean response) {
-                        new AddGiocatoreOperation().doCall(id, "c", new MediatoreOperation.BooleanCallback() {
+                    public void onResponse(Giocatore response) {
+                        new AddGiocatoreOperation().doCall(id, "c", new MediatoreOperation.GiocatoreCallback() {
                             @Override
-                            public void onResponse(Boolean response) {
-                                new AddGiocatoreOperation().doCall(id, "d", new MediatoreOperation.BooleanCallback() {
+                            public void onResponse(Giocatore response) {
+                                new AddGiocatoreOperation().doCall(id, "d", new MediatoreOperation.GiocatoreCallback() {
                                     @Override
-                                    public void onResponse(Boolean response) {
+                                    public void onResponse(Giocatore response) {
                                         new SetMonteOperation().doCall(id, true, new MediatoreOperation.BooleanCallback() {
                                             @Override
                                             public void onResponse(Boolean response) {
@@ -103,18 +103,6 @@ public class SecondFragment extends Fragment {
                                                             imageView.setLayoutParams(layoutParams);
 
                                                             layout.addView(imageView);
-                                                            new GetMazzoGiocatore().doCall(id, "y", new MediatoreOperation.MazzoCallback() {
-                                                                @Override
-                                                                public void onResponse(Mazzo response) {
-
-                                                                }
-
-                                                                @Override
-                                                                public void onError() {
-                                                                    super.onError();
-                                                                    //ERRORE!!!
-                                                                }
-                                                            });
                                                         }
                                                     }
                                                 });

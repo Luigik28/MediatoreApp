@@ -11,7 +11,7 @@ public class Ping<U> extends MediatoreOperation<String> {
 
     public Ping(String ping) {
         super();
-        addProperty("n",ping);
+        addProperty("n", ping);
     }
 
     @Override
@@ -22,6 +22,4 @@ public class Ping<U> extends MediatoreOperation<String> {
     public void doCall(PingCallback callback) {
         super.call(callback);
     }
-
-
 }

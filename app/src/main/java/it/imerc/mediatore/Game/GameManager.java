@@ -17,7 +17,4 @@ public class GameManager {
         });
         io = new Giocatore(nome);
     }
-
-
-
 }

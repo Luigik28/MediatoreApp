@@ -3,6 +3,8 @@ package it.imerc.mediatore.wsClient;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
+import com.google.gson.Gson;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.AttributeContainer;
@@ -70,8 +72,9 @@ public abstract class MediatoreOperation<T> {
 
         @Override
         public Mazzo parseRequest(AttributeContainer attributeContainer) {
-            SoapPrimitive soapPrimitive = (SoapPrimitive) attributeContainer;
-            return new Mazzo(soapPrimitive.getValue().toString());
+            Gson g = new Gson();
+            Mazzo mazzo = g.fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Mazzo.class);
+            return mazzo;
         }
     }
 
@@ -86,14 +89,15 @@ public abstract class MediatoreOperation<T> {
 
         @Override
         public Giocatore parseRequest(AttributeContainer attributeContainer) {
-            SoapObject soapObject = (SoapObject) attributeContainer;
-            return new Giocatore(soapObject);
+            Gson g = new Gson();
+            Giocatore giocatore = g.fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Giocatore.class);
+            return giocatore;
         }
     }
 
     private static final String WSDL_TARGET_NAMESPACE = "http://service.iMerc.it";
 
-    private static String serverUrl = "http://192.168.1.59:8080";
+    private static String serverUrl = "http://mediatore-sviluppo.ddns.net";
 
     private static final String SOAP_ADDRESS_NO_URL = "/Mediatore/services/GameService?wsdl";
 
@@ -147,18 +151,18 @@ public abstract class MediatoreOperation<T> {
             } catch (SoapFault fault) {
                 fault.printStackTrace();
                 result = new SoapObject();
-                result.addAttribute("exception",fault.faultcode);
-                result.addAttribute("message",fault.faultstring);
+                result.addAttribute("exception", fault.faultcode);
+                result.addAttribute("message", fault.faultstring);
             } catch (IOException e) {
                 e.printStackTrace();
                 result = new SoapObject();
-                result.addAttribute("exception",e.getClass().toString());
-                result.addAttribute("message",e.getMessage());
+                result.addAttribute("exception", e.getClass().toString());
+                result.addAttribute("message", e.getMessage());
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
                 result = new SoapObject();
-                result.addAttribute("exception",e.getClass().toString());
-                result.addAttribute("message",e.getMessage());
+                result.addAttribute("exception", e.getClass().toString());
+                result.addAttribute("message", e.getMessage());
             }
             return result;
         }
@@ -171,6 +175,4 @@ public abstract class MediatoreOperation<T> {
                 callback.onResponse(callback.parseRequest(result));
         }
     }
-
-
 }

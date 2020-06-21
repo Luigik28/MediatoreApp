@@ -10,6 +10,7 @@ public class Utility {
     //Ordine: denare coppe mazze spade
 
     public static Map<Integer, Integer> mapCarte = new HashMap<>();
+
     static {
         mapCarte.put(1, R.drawable.asso_denare);
         mapCarte.put(2, R.drawable.due_denare);

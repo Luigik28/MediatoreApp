@@ -1,17 +1,17 @@
 package it.imerc.mediatore.wsClient.operations;
 
+import it.imerc.mediatore.Game.Giocatore;
 import it.imerc.mediatore.wsClient.MediatoreOperation;
 
-public class AddGiocatoreOperation extends MediatoreOperation<Boolean> {
+public class AddGiocatoreOperation extends MediatoreOperation<Giocatore> {
 
     @Override
     public String getOperationName() {
         return "addGiocatore";
     }
 
-    public void doCall(Integer id, String nome, BooleanCallback callback) {
+    public void doCall(Integer id, String nome, GiocatoreCallback callback) {
         this.addProperty("id", id).addProperty("nome", nome);
         super.call(callback);
     }
-
 }
