@@ -72,9 +72,7 @@ public abstract class MediatoreOperation<T> {
 
         @Override
         public Mazzo parseRequest(AttributeContainer attributeContainer) {
-            Gson g = new Gson();
-            Mazzo mazzo = g.fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Mazzo.class);
-            return mazzo;
+            return new Gson().fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Mazzo.class);
         }
     }
 
@@ -89,9 +87,7 @@ public abstract class MediatoreOperation<T> {
 
         @Override
         public Giocatore parseRequest(AttributeContainer attributeContainer) {
-            Gson g = new Gson();
-            Giocatore giocatore = g.fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Giocatore.class);
-            return giocatore;
+            return new Gson().fromJson(((SoapPrimitive) attributeContainer).getValue().toString(), Giocatore.class);
         }
     }
 
