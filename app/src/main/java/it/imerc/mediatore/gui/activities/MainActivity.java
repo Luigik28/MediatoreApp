@@ -1,34 +1,21 @@
-package it.imerc.mediatore;
+package it.imerc.mediatore.gui.activities;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.app.Fragment;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.StrictMode;
 import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.SocketImpl;
+import it.imerc.mediatore.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

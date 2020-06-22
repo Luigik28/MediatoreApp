@@ -1,52 +1,32 @@
-package it.imerc.mediatore;
+package it.imerc.mediatore.gui.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-
-import java.io.IOException;
-import java.io.PrintStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import it.imerc.mediatore.Game.Carta;
 import it.imerc.mediatore.Game.GameManager;
 import it.imerc.mediatore.Game.Giocatore;
 import it.imerc.mediatore.Game.Mazzo;
+import it.imerc.mediatore.gui.activities.MainActivity;
+import it.imerc.mediatore.R;
 import it.imerc.mediatore.util.Utility;
-import it.imerc.mediatore.wsClient.Client;
-import it.imerc.mediatore.wsClient.MediatoreOperation;
 import it.imerc.mediatore.wsClient.operations.AddGiocatoreOperation;
 import it.imerc.mediatore.wsClient.operations.CreaPartitaOperation;
 import it.imerc.mediatore.wsClient.operations.DaiCarteOperation;
-import it.imerc.mediatore.wsClient.operations.GetMazzoGiocatore;
-import it.imerc.mediatore.wsClient.operations.Ping;
 import it.imerc.mediatore.wsClient.operations.SetMonteOperation;
 import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
 import it.imerc.mediatore.wsClient.operations.callback.GiocatoreCallback;

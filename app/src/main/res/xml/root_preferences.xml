@@ -1,0 +1,31 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/server">
+
+        <SwitchPreferenceCompat
+            android:id="@+id/debug_preferences"
+            app:key="debug"
+            app:title="@string/debug" />
+
+        <EditTextPreference
+            android:id="@+id/ip_preferences"
+            app:dependency="debug"
+            app:key="ipAddress"
+            app:title="@string/indirizzo_ip"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            android:id="@+id/port_preferences"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            app:dependency="debug"
+            app:key="portAddress"
+            app:title="@string/indirizzo_port"
+
+            app:useSimpleSummaryProvider="true"
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

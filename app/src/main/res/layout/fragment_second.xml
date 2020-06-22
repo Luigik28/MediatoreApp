@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SecondFragment">
+    tools:context=".gui.fragments.SecondFragment">
 
     <HorizontalScrollView
         android:layout_width="413dp"
@@ -17,6 +17,6 @@
             android:id="@+id/image_container"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

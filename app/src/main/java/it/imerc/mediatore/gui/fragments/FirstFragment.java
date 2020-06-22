@@ -1,7 +1,9 @@
-package it.imerc.mediatore;
+package it.imerc.mediatore.gui.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import it.imerc.mediatore.Game.GameManager;
+import it.imerc.mediatore.R;
 import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
 
 public class FirstFragment extends Fragment {
@@ -53,9 +56,20 @@ public class FirstFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        SharedPreferences p = requireContext().getSharedPreferences(getString(R.string.preferencesKey),Context.MODE_PRIVATE);
+        Log.d("AddNewRecord", "getAll: " + p.getAll());
+        Log.d("AddNewRecord", "Size: " + p.getAll().size());
     }
 
-//    public ActionBar getSupportActionBar() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences p = requireContext().getSharedPreferences(getString(R.string.preferencesKey),Context.MODE_PRIVATE);
+        Log.d("AddNewRecord", "getAll: " + p.getAll());
+        Log.d("AddNewRecord", "Size: " + p.getAll().size());
+    }
+
+    //    public ActionBar getSupportActionBar() {
 //        return ((AppCompatActivity) requireActivity()).getSupportActionBar();
 //    }
 }
