@@ -1,6 +1,8 @@
 package it.imerc.mediatore.gui.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import it.imerc.mediatore.Game.GameManager;
 import it.imerc.mediatore.R;
+import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
 import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
 
 public class FirstFragment extends Fragment {
@@ -48,8 +51,7 @@ public class FirstFragment extends Fragment {
                 gameManager.creaPartita(nome, new IntegerCallback() {
                     @Override
                     public void onResponse(Integer response) {
-                        NavHostFragment.findNavController(FirstFragment.this)
-                                .navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
+                        onGameCreated();
                     }
 
                     @Override
@@ -63,8 +65,7 @@ public class FirstFragment extends Fragment {
                                         gameManager.creaPartita(nome, new IntegerCallback() {
                                             @Override
                                             public void onResponse(Integer response) {
-                                                NavHostFragment.findNavController(FirstFragment.this)
-                                                        .navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
+                                                onGameCreated();
                                             }
 
                                             @Override
@@ -98,7 +99,39 @@ public class FirstFragment extends Fragment {
         Log.d("AddNewRecord", "Size: " + p.getAll().size());
     }
 
-    //    public ActionBar getSupportActionBar() {
+//    public ActionBar getSupportActionBar() {
 //        return ((AppCompatActivity) requireActivity()).getSupportActionBar();
 //    }
+
+    private void onGameCreated() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("ID PARTITA: " + gameManager.getIdPartita());
+        builder.setMessage("Ciao! Hai create la partita con id " + gameManager.getIdPartita() + ", " +
+                "fai vedere questo numero ai tuoi amici per iniziare ad arrassarti!\n" +
+                "Nel frattempo, vuoi giocare con il monte?");
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //gameManager.setMonte(false, getPostMonteCallback());
+            }
+        });
+        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                gameManager.setMonte(true, getPostMonteCallback());
+            }
+        });
+        builder.show().getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(null);
+    }
+
+    private BooleanCallback getPostMonteCallback() {
+        return new BooleanCallback() {
+            @Override
+            public void onResponse(Boolean response) {
+                NavHostFragment.findNavController(FirstFragment.this)
+                        .navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
+            }
+        };
+    }
+
 }
