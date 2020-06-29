@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import it.imerc.mediatore.R;
+import it.imerc.mediatore.wsClient.MediatoreOperation;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        MediatoreOperation.loadPreferences(this);
 
         //TODO: internet in main thread
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();

@@ -54,4 +54,9 @@ public class Utility {
         mapCarte.put(40, R.drawable.dieci_spade);
     }
 
+    public static String debugKey = "debug";
+    public static String ipAddressKey = "ipAddress";
+    public static String portAddressKey = "portAddress";
+    public static String timeoutKey = "timeout";
+
 }

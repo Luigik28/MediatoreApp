@@ -40,6 +40,12 @@ public class GameManager implements Serializable {
                 idPartita = response;
                 callback.onResponse(response);
             }
+
+            @Override
+            public void onError(String message) {
+                super.onError(message);
+                callback.onError(message);
+            }
         });
     }
 }

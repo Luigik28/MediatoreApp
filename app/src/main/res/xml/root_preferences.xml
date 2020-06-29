@@ -26,6 +26,15 @@
             app:useSimpleSummaryProvider="true"
             />
 
+        <EditTextPreference
+            android:id="@+id/timeout_preferences"
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+
+            app:key="timeout"
+            app:title="Timeout connessione (Ms)"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

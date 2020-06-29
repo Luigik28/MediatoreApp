@@ -9,10 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import it.imerc.mediatore.Game.GameManager;
 import it.imerc.mediatore.R;
@@ -35,9 +38,10 @@ public class FirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         final ProgressBar progressBar = view.findViewById(R.id.progressBar);
         final EditText editTextHost = view.findViewById(R.id.host);
+        final View thisView = view;
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 //TODO: Aggiungere controlli di inizio partita prima di effettuare la chiamata (es. stringa vuota)
                 progressBar.setVisibility(View.VISIBLE);
                 final String nome = editTextHost.getText().toString();
@@ -46,6 +50,31 @@ public class FirstFragment extends Fragment {
                     public void onResponse(Integer response) {
                         NavHostFragment.findNavController(FirstFragment.this)
                                 .navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Snackbar.make(thisView, "Timeout connessione al server", Snackbar.LENGTH_LONG)
+                                .setAction("Riprova", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        progressBar.setVisibility(View.VISIBLE);
+                                        gameManager.creaPartita(nome, new IntegerCallback() {
+                                            @Override
+                                            public void onResponse(Integer response) {
+                                                NavHostFragment.findNavController(FirstFragment.this)
+                                                        .navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
+                                            }
+
+                                            @Override
+                                            public void onError(String message) {
+                                                progressBar.setVisibility(View.INVISIBLE);
+                                                Toast.makeText(FirstFragment.this.requireContext(), "Errore di connessione", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                    }
+                                }).show();
                     }
                 });
 

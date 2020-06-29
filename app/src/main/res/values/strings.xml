@@ -17,5 +17,7 @@
     <string name="action_settings">Impostazioni</string>
     <string name="indirizzo_port">Porta</string>
     <string name="reset">Reset</string>
+    <string name="defaultIp">192.168.1.2</string>
+    <string name="defaultPort">8080</string>
 
 </resources>

@@ -1,6 +1,8 @@
 package it.imerc.mediatore.wsClient;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import org.ksoap2.SoapEnvelope;
@@ -13,13 +15,17 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
+import it.imerc.mediatore.R;
+import it.imerc.mediatore.util.Utility;
 import it.imerc.mediatore.wsClient.operations.callback.SoapCallback;
 
 public abstract class MediatoreOperation<T> {
 
     private static final String WSDL_TARGET_NAMESPACE = "http://service.iMerc.it";
 
-    private static String serverUrl = "http://mediatore-sviluppo.ddns.net";
+    private static String localServer = null;
+
+    public static int timeout = 5000;
 
     private static final String SOAP_ADDRESS_NO_URL = "/Mediatore/services/GameService?wsdl";
 
@@ -29,12 +35,32 @@ public abstract class MediatoreOperation<T> {
 
     public abstract String getOperationName();
 
+    public static void setLocalServer(String serverUrl) {
+        localServer = serverUrl;
+    }
+
+    public static String getServerUrl() {
+        String serverUrl = "http://mediatore-sviluppo.ddns.net";
+        return localServer == null ? serverUrl : localServer;
+    }
+
     public static String getSoapAddress() {
-        return serverUrl + SOAP_ADDRESS_NO_URL;
+        return getServerUrl() + SOAP_ADDRESS_NO_URL;
     }
 
     public String getSoapAction() {
-        return serverUrl + "/Mediatore/services/GameService/" + getOperationName();
+        return getServerUrl() + "/Mediatore/services/GameService/" + getOperationName();
+    }
+
+    public static void loadPreferences(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.preferencesKey), Context.MODE_PRIVATE);
+        if(sharedPreferences.getBoolean(Utility.debugKey, false)) {
+            localServer = "http://";
+            localServer += sharedPreferences.getString(Utility.ipAddressKey, context.getString(R.string.defaultIp));
+            localServer += ":" + sharedPreferences.getString(Utility.portAddressKey, context.getString(R.string.defaultPort));
+            MediatoreOperation.setLocalServer(localServer);
+        }
+        timeout = sharedPreferences.getInt(Utility.timeoutKey, timeout);
     }
 
     public MediatoreOperation() {
@@ -49,9 +75,9 @@ public abstract class MediatoreOperation<T> {
         return request.addProperty(propertyName, propertyValue);
     }
 
-    protected <R extends SoapCallback<T>> void call(R callback) {
+    protected <Z extends SoapCallback<T>> void call(Z callback) {
         envelope.setOutputSoapObject(request);
-        HttpTransportSE httpTransport = new HttpTransportSE(getSoapAddress());
+        HttpTransportSE httpTransport = new HttpTransportSE(getSoapAddress(), timeout);
         new SoapCallTask(callback).execute(httpTransport);
     }
 
@@ -93,7 +119,7 @@ public abstract class MediatoreOperation<T> {
 
         @Override
         protected void onPostExecute(AttributeContainer result) {
-            if (result instanceof  SoapObject)
+            if (result instanceof SoapObject)
                 callback.onError(result.getAttributeAsString("message"));
             else
                 callback.onResponse(callback.parseRequest(result));
