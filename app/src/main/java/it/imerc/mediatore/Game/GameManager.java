@@ -13,9 +13,17 @@ public class GameManager implements Serializable {
 
     public static String GAME_MANAGER = "gameManager";
 
+    public static GameManager gameManager = new GameManager();
     private Giocatore io;
     private int idPartita;
     private boolean monte;
+    public boolean ready = false;
+
+    private GameManager() {}
+
+    public static GameManager getGameManager() {
+        return gameManager == null ? new GameManager() : gameManager;
+    }
 
     public int getIdPartita() {
         return idPartita;
