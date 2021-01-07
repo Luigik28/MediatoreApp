@@ -10,7 +10,7 @@ public class NumeroGiocatoriOperation extends MediatoreOperation<Integer> {
         return "numeroGiocatori";
     }
 
-    public void doCall(int id, IntegerCallback callback) {
+    public void doCall(String id, IntegerCallback callback) {
         this.addProperty("id", id);
         super.call(callback);
     }

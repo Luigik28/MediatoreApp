@@ -11,6 +11,7 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="inserisci_il_tuo_nome">Inserisci il tuo nome</string>
+    <string name="inserisci_nome_partita">Inserisci il nome della partita</string>
     <string name="debug">Debug</string>
     <string name="title_activity_settings">Impostazioni</string>
     <string name="indirizzo_ip">Indirizzo IP</string>

@@ -8,6 +8,7 @@ import it.imerc.mediatore.wsClient.operations.CreaPartitaOperation;
 import it.imerc.mediatore.wsClient.operations.SetMonteOperation;
 import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
 import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
+import it.imerc.mediatore.wsClient.operations.callback.StringCallback;
 
 public class GameManager implements Serializable {
 
@@ -15,9 +16,10 @@ public class GameManager implements Serializable {
 
     public static GameManager gameManager = new GameManager();
     private Giocatore io;
-    private int idPartita;
+    private String idPartita;
     private boolean monte;
     public boolean ready = false;
+    private int nGiocatori = 0;
 
     private GameManager() {}
 
@@ -25,8 +27,12 @@ public class GameManager implements Serializable {
         return gameManager == null ? new GameManager() : gameManager;
     }
 
-    public int getIdPartita() {
+    public String getIdPartita() {
         return idPartita;
+    }
+
+    public void setIdPartita(String id) {
+        this.idPartita = id;
     }
 
     public Giocatore getHost() {
@@ -43,11 +49,11 @@ public class GameManager implements Serializable {
         return (GameManager) bundle.getSerializable(GameManager.GAME_MANAGER);
     }
 
-    public void creaPartita(String nome, final IntegerCallback callback) {
-        io = new Giocatore(nome);
-        new CreaPartitaOperation().doCall(nome, new IntegerCallback() {
+    public void creaPartita(String partita, String giocatore, final StringCallback callback) {
+        io = new Giocatore(giocatore);
+        new CreaPartitaOperation().doCall(partita, giocatore, new StringCallback() {
             @Override
-            public void onResponse(Integer response) {
+            public void onResponse(String response) {
                 idPartita = response;
                 callback.onResponse(response);
             }
@@ -78,5 +84,13 @@ public class GameManager implements Serializable {
 
     public boolean getMonte() {
         return  monte;
+    }
+
+    public int getnGiocatori() {
+        return nGiocatori;
+    }
+
+    public void setnGiocatori(int nGiocatori) {
+        this.nGiocatori = nGiocatori;
     }
 }

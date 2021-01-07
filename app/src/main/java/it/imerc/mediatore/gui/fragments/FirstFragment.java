@@ -1,10 +1,9 @@
 package it.imerc.mediatore.gui.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,26 +17,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import it.imerc.mediatore.Game.GameManager;
+import it.imerc.mediatore.Game.Giocatore;
 import it.imerc.mediatore.R;
-import it.imerc.mediatore.wsClient.operations.NumeroGiocatoriOperation;
-import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
-import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
+import it.imerc.mediatore.wsClient.operations.AddGiocatoreOperation;
+import it.imerc.mediatore.wsClient.operations.GetGiocatoriOperation;
+import it.imerc.mediatore.wsClient.operations.callback.GiocatoreCallback;
+import it.imerc.mediatore.wsClient.operations.callback.GiocatoriCallback;
+import it.imerc.mediatore.wsClient.operations.callback.StringCallback;
 
 public class FirstFragment extends Fragment {
 
     final GameManager gameManager = GameManager.getGameManager();
     private ProgressBar progressBar;
     private TextView textProgress;
-    private Spinner playersSpinner;
+    private final String textGiocatori = "Numero Giocatori: ";
 
     @Override
     public View onCreateView(
@@ -51,9 +57,11 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         final EditText editTextHost = view.findViewById(R.id.host);
+        final EditText editTextGame = view.findViewById(R.id.game);
+        ((AppCompatActivity)requireActivity()).getSupportActionBar().show();
         progressBar = view.findViewById(R.id.progressBar);
         textProgress = view.findViewById(R.id.textViewProgress);
-        playersSpinner = view.findViewById(R.id.numberSpinner);
+        final Spinner playersSpinner = view.findViewById(R.id.numberSpinner);
         final View thisView = view;
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,10 +69,13 @@ public class FirstFragment extends Fragment {
                 //TODO: Aggiungere controlli di inizio partita prima di effettuare la chiamata (es. stringa vuota)
                 hideKeyboard(requireActivity());
                 progressBar.setVisibility(View.VISIBLE);
-                final String nome = editTextHost.getText().toString();
-                gameManager.creaPartita(nome, new IntegerCallback() {
+                final String giocatore = editTextHost.getText().toString();
+                final String partita = editTextGame.getText().toString();
+                gameManager.creaPartita(partita, giocatore, new StringCallback() {
                     @Override
-                    public void onResponse(Integer response) {
+                    public void onResponse(String response) {
+                        gameManager.setIdPartita(response);
+                        gameManager.setnGiocatori(Integer.parseInt(playersSpinner.getSelectedItem().toString()));
                         onGameCreated();
                     }
 
@@ -76,9 +87,11 @@ public class FirstFragment extends Fragment {
                                     @Override
                                     public void onClick(View v) {
                                         progressBar.setVisibility(View.VISIBLE);
-                                        gameManager.creaPartita(nome, new IntegerCallback() {
+                                        gameManager.creaPartita(partita, giocatore, new StringCallback() {
                                             @Override
-                                            public void onResponse(Integer response) {
+                                            public void onResponse(String response) {
+                                                gameManager.setIdPartita(response);
+                                                gameManager.setnGiocatori(Integer.parseInt(playersSpinner.getSelectedItem().toString()));
                                                 onGameCreated();
                                             }
 
@@ -118,37 +131,11 @@ public class FirstFragment extends Fragment {
 //    }
 
     private void onGameCreated() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("ID PARTITA: " + gameManager.getIdPartita());
-        builder.setMessage("Ciao! Hai create la partita con id " + gameManager.getIdPartita() + ", " +
-                "fai vedere questo numero ai tuoi amici per iniziare ad arrassarti!\n" +
-                "Nel frattempo, vuoi giocare con il monte?");
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                gameManager.setMonte(false, getPostMonteCallback());
-            }
-        });
-        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                gameManager.setMonte(true, getPostMonteCallback());
-            }
-        });
-        builder.show().getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(null);
-    }
-
-    private BooleanCallback getPostMonteCallback() {
-        return new BooleanCallback() {
-            @Override
-            public void onResponse(Boolean response) {
-                progressBar.setVisibility(View.VISIBLE);
-                textProgress.setVisibility(View.VISIBLE);
-                textProgress.setText("Numero giocatori: 1");
-                Timer timer = new Timer();
-                timer.schedule(new TaskGetGiocatori(textProgress),0,1000);
-            }
-        };
+        progressBar.setVisibility(View.VISIBLE);
+        textProgress.setVisibility(View.VISIBLE);
+        Timer timer = new Timer();
+        timer.schedule(new TaskGetGiocatori(textProgress),500,1000);
+        createGameTest();
     }
 
     public void hideKeyboard(Activity activity) {
@@ -171,17 +158,37 @@ public class FirstFragment extends Fragment {
 
         @Override
         public void run() {
-            System.out.println("calcolo");
-                    new NumeroGiocatoriOperation().doCall(GameManager.getGameManager().getIdPartita(), new IntegerCallback() {
-                        @Override
-                        public void onResponse(Integer response) {
-                    editText.setText("ID Partita: " + gameManager.getIdPartita() + "\nNumero giocatori: " + response);
-                    if(response.equals(Integer.valueOf(FirstFragment.this.playersSpinner.getSelectedItem().toString()))) {
+            new GetGiocatoriOperation().doCall(gameManager.getIdPartita(), new GiocatoriCallback() {
+                @Override
+                public void onResponse(LinkedList<Giocatore> response) {
+                    System.out.println("n giocatori sel: " + gameManager.getnGiocatori());
+                    System.out.println("size           : " + response.size());
+                    StringBuilder textGiocatori = new StringBuilder("ID Partita: ")
+                            .append(gameManager.getIdPartita())
+                            .append("\n")
+                            .append(FirstFragment.this.textGiocatori)
+                            .append(response.size());
+                    for (Giocatore g : response) {
+                        textGiocatori.append("\n").append(g.getNome());
+                    }
+                    editText.setText(textGiocatori.toString());
+                    if(response.size() == gameManager.getnGiocatori()) {
                         TaskGetGiocatori.this.cancel();
                         NavHostFragment.findNavController(FirstFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
                     }
                 }
             });
         }
+    }
+
+
+    private void createGameTest() {
+        for(int i = 1; i < gameManager.getnGiocatori(); i++)
+            new AddGiocatoreOperation().doCall(gameManager.getIdPartita(), "Giocatore" + (i + 1), new GiocatoreCallback() {
+                @Override
+                public void onResponse(Giocatore response) {
+
+                }
+            });
     }
 }

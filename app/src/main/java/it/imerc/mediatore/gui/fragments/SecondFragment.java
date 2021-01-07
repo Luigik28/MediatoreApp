@@ -1,7 +1,6 @@
 package it.imerc.mediatore.gui.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -10,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,20 +18,18 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import java.util.Objects;
+
 import it.imerc.mediatore.Game.Carta;
 import it.imerc.mediatore.Game.GameManager;
-import it.imerc.mediatore.Game.Giocatore;
 import it.imerc.mediatore.Game.Mazzo;
 import it.imerc.mediatore.gui.activities.MainActivity;
 import it.imerc.mediatore.R;
 import it.imerc.mediatore.util.Utility;
-import it.imerc.mediatore.wsClient.operations.AddGiocatoreOperation;
-import it.imerc.mediatore.wsClient.operations.CreaPartitaOperation;
 import it.imerc.mediatore.wsClient.operations.DaiCarteOperation;
+import it.imerc.mediatore.wsClient.operations.GetTrionfoOperation;
 import it.imerc.mediatore.wsClient.operations.NumeroGiocatoriOperation;
-import it.imerc.mediatore.wsClient.operations.SetMonteOperation;
-import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
-import it.imerc.mediatore.wsClient.operations.callback.GiocatoreCallback;
+import it.imerc.mediatore.wsClient.operations.callback.CartaCallback;
 import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
 import it.imerc.mediatore.wsClient.operations.callback.MazzoCallback;
 
@@ -51,6 +49,7 @@ public class SecondFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((AppCompatActivity)requireActivity()).getSupportActionBar().hide();
         gameManager = GameManager.getGameManager(getArguments());
         new NumeroGiocatoriOperation().doCall(gameManager.getIdPartita(), new IntegerCallback() {
             @Override
@@ -63,22 +62,35 @@ public class SecondFragment extends Fragment {
     }
 
     private boolean draw(@NonNull View root) {
-        final LinearLayout layout = root.findViewById(R.id.image_container);
+        final LinearLayout layout = root.findViewById(R.id.my_card);
+        final LinearLayout layout2 = root.findViewById(R.id.my_card2);
         final LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        final ImageView trionfo = root.findViewById(R.id.trionfo);
+        ((TextView)root.findViewById(R.id.textHost)).setText(gameManager.getHost().getNome());
         new DaiCarteOperation().doCall(gameManager.getIdPartita(), new MazzoCallback() {
             @Override
             public void onResponse(Mazzo response) {
                 for (Carta c : response.getCarteCoperte()) {
                     gameManager.getHost().mettiInMano(c);
-                    layoutParams.setMargins(20, 20, 20, 20);
+                    layoutParams.setMargins(10, 10, 10, 10);
                     layoutParams.gravity = Gravity.CENTER;
+                    layoutParams.height = 300;
+                    layoutParams.width = 180;
                     ImageView imageView = new ImageView(getActivity());
                     imageView.setImageResource(Utility.mapCarte.get(c.getId()));
                     //imageView.setOnClickListener(documentImageListener);
                     imageView.setLayoutParams(layoutParams);
-
-                    layout.addView(imageView);
+                    if(gameManager.getHost().getMano().getCarteInMano() - 1 < (response.getCarteCoperte().size()) / 2 )
+                        layout2.addView(imageView);
+                    else
+                        layout.addView(imageView);
                 }
+            }
+        });
+        new GetTrionfoOperation().doCall(gameManager.getIdPartita(), new CartaCallback() {
+            @Override
+            public void onResponse(Carta response) {
+                trionfo.setImageResource(Utility.mapCarte.get(response.getId()));
             }
         });
         return true;

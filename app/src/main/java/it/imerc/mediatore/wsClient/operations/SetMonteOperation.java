@@ -10,7 +10,7 @@ public class SetMonteOperation extends MediatoreOperation<Boolean> {
         return "setMonte";
     }
 
-    public void doCall(Integer id, Boolean monte, BooleanCallback callback) {
+    public void doCall(String id, Boolean monte, BooleanCallback callback) {
         this.addProperty("id", id).addProperty("monte", monte);
         super.call(callback);
     }

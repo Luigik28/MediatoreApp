@@ -11,7 +11,7 @@ public class DaiCarteOperation extends MediatoreOperation<Mazzo> {
         return "daiCarte";
     }
 
-    public void doCall(Integer id, MazzoCallback callback) {
+    public void doCall(String id, MazzoCallback callback) {
         this.addProperty("id", id);
         super.call(callback);
     }

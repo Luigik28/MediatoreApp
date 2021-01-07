@@ -11,7 +11,7 @@ public class AddGiocatoreOperation extends MediatoreOperation<Giocatore> {
         return "addGiocatore";
     }
 
-    public void doCall(Integer id, String nome, GiocatoreCallback callback) {
+    public void doCall(String id, String nome, GiocatoreCallback callback) {
         this.addProperty("id", id).addProperty("nome", nome);
         super.call(callback);
     }
