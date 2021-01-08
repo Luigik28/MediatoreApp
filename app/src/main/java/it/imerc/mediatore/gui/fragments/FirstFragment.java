@@ -168,8 +168,6 @@ public class FirstFragment extends Fragment {
             new GetGiocatoriOperation().doCall(gameManager.getIdPartita(), new GiocatoriCallback() {
                 @Override
                 public void onResponse(LinkedList<Giocatore> response) {
-                    System.out.println("n giocatori sel: " + gameManager.getnGiocatori());
-                    System.out.println("size           : " + response.size());
                     StringBuilder textGiocatori = new StringBuilder("ID Partita: ")
                             .append(gameManager.getIdPartita())
                             .append("\n")

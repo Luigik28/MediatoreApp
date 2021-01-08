@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ import org.w3c.dom.Text;
 
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import it.imerc.mediatore.Game.Carta;
 import it.imerc.mediatore.Game.GameManager;
@@ -39,6 +42,7 @@ import it.imerc.mediatore.util.Utility;
 import it.imerc.mediatore.util.VerticalTextView;
 import it.imerc.mediatore.wsClient.operations.DaiCarteOperation;
 import it.imerc.mediatore.wsClient.operations.GetGiocatoriOperation;
+import it.imerc.mediatore.wsClient.operations.GetTempoRimasto;
 import it.imerc.mediatore.wsClient.operations.GetTrionfoOperation;
 import it.imerc.mediatore.wsClient.operations.NumeroGiocatoriOperation;
 import it.imerc.mediatore.wsClient.operations.callback.CartaCallback;
@@ -77,6 +81,7 @@ public class SecondFragment extends Fragment {
         final TextView textGiocatore2 = (TextView) root.findViewById(R.id.textGiocatore2);
         final TextView textGiocatore3 = (VerticalTextView) root.findViewById(R.id.textGiocatore3);
         final TextView textGiocatore4 = (TextView) root.findViewById(R.id.textGiocatore4);
+        final ProgressBar progressBar = (ProgressBar) root.findViewById(R.id.progressBarTempo);
         new DaiCarteOperation().doCall(gameManager.getIdPartita(), new MazzoCallback() {
             @Override
             public void onResponse(Mazzo response) {
@@ -111,6 +116,7 @@ public class SecondFragment extends Fragment {
                                 textGiocatore3.setText(g3.getNome().toString());
                                 if(g4 != null)
                                     textGiocatore4.setText(g4.getNome().toString());
+                                startGame(progressBar);
                             }
                         });
                     }
@@ -152,4 +158,31 @@ public class SecondFragment extends Fragment {
         super.onDetach();
     }
 
+    private void startGame(ProgressBar progressBar) {
+        Timer timer = new Timer();
+        timer.schedule(new SecondFragment.TaskGetTimeForAction(progressBar),0,1000);
+    }
+
+    private class TaskGetTimeForAction extends TimerTask {
+
+        ProgressBar progressBar;
+
+        public TaskGetTimeForAction(ProgressBar progressBar) {
+            this.progressBar = progressBar;
+        }
+
+        @Override
+        public void run() {
+            new GetTempoRimasto().doCall(gameManager.getIdPartita(), new IntegerCallback() {
+                @Override
+                public void onResponse(Integer response) {
+                    if(response < 0)
+                        SecondFragment.TaskGetTimeForAction.this.cancel();
+                    else
+                        progressBar.setProgress(response);
+                    System.out.println(response);
+                }
+            });
+        }
+    }
 }

@@ -149,4 +149,15 @@
         app:layout_constraintStart_toEndOf="@+id/buttonChiama"
         app:layout_constraintTop_toTopOf="@+id/buttonChiama" />
 
+    <ProgressBar
+        android:id="@+id/progressBarTempo"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="20000"
+        app:layout_constraintBottom_toTopOf="@+id/textHost"
+        app:layout_constraintEnd_toEndOf="@+id/buttonSola"
+        app:layout_constraintStart_toStartOf="@+id/buttonPasso"
+        app:layout_constraintTop_toBottomOf="@+id/buttonChiama" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
