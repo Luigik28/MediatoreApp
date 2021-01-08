@@ -27,7 +27,7 @@ public abstract class MediatoreOperation<T> {
 
     public static int timeout = 5000;
 
-    private static final String SOAP_ADDRESS_NO_URL = "/Mediatore/services/GameService?wsdl";
+    private static final String SOAP_ADDRESS_NO_URL = "/services/GameService?wsdl";
 
     private final SoapObject request;
 
@@ -40,7 +40,7 @@ public abstract class MediatoreOperation<T> {
     }
 
     public static String getServerUrl() {
-        String serverUrl = "http://mediatore-sviluppo.ddns.net";
+        String serverUrl = "https://mediatore.herokuapp.com/";
         return localServer == null ? serverUrl : localServer;
     }
 
@@ -49,7 +49,7 @@ public abstract class MediatoreOperation<T> {
     }
 
     public String getSoapAction() {
-        return getServerUrl() + "/Mediatore/services/GameService/" + getOperationName();
+        return getServerUrl() + "/services/GameService/" + getOperationName();
     }
 
     public static void loadPreferences(Context context) {
