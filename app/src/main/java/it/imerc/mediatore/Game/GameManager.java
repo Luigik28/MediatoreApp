@@ -7,19 +7,23 @@ import java.io.Serializable;
 import it.imerc.mediatore.wsClient.operations.CreaPartitaOperation;
 import it.imerc.mediatore.wsClient.operations.SetMonteOperation;
 import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
-import it.imerc.mediatore.wsClient.operations.callback.IntegerCallback;
 import it.imerc.mediatore.wsClient.operations.callback.StringCallback;
 
 public class GameManager implements Serializable {
 
     public static String GAME_MANAGER = "gameManager";
 
+    public static int PASSA = 1;
+    public static int CHIAMA = 2;
+    public static int SOLA = 3;
+    public static int GIOCA_CARTA = 4;
+
     public static GameManager gameManager = new GameManager();
     private Giocatore io;
     private String idPartita;
     private boolean monte;
-    public boolean ready = false;
     private int nGiocatori = 0;
+    private int idGiocatore;
 
     private GameManager() {}
 
@@ -51,6 +55,7 @@ public class GameManager implements Serializable {
 
     public void creaPartita(String partita, String giocatore, final StringCallback callback) {
         io = new Giocatore(giocatore);
+        setIdGiocatore(0);
         new CreaPartitaOperation().doCall(partita, giocatore, new StringCallback() {
             @Override
             public void onResponse(String response) {
@@ -92,5 +97,13 @@ public class GameManager implements Serializable {
 
     public void setnGiocatori(int nGiocatori) {
         this.nGiocatori = nGiocatori;
+    }
+
+    public void setIdGiocatore(int idGiocatore) {
+        this.idGiocatore = idGiocatore;
+    }
+
+    public int getIdGiocatore() {
+        return idGiocatore;
     }
 }

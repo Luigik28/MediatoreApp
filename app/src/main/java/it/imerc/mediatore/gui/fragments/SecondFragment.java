@@ -44,6 +44,7 @@ import it.imerc.mediatore.wsClient.operations.DaiCarteOperation;
 import it.imerc.mediatore.wsClient.operations.GetGiocatoriOperation;
 import it.imerc.mediatore.wsClient.operations.GetTempoRimasto;
 import it.imerc.mediatore.wsClient.operations.GetTrionfoOperation;
+import it.imerc.mediatore.wsClient.operations.GiocaOperation;
 import it.imerc.mediatore.wsClient.operations.NumeroGiocatoriOperation;
 import it.imerc.mediatore.wsClient.operations.callback.CartaCallback;
 import it.imerc.mediatore.wsClient.operations.callback.GiocatoriCallback;
@@ -54,6 +55,7 @@ public class SecondFragment extends Fragment {
 
     private Activity activity;
     private GameManager gameManager;
+    private Timer timer = new Timer();
 
     @Override
     public View onCreateView(
@@ -123,6 +125,33 @@ public class SecondFragment extends Fragment {
                 });
             }
         });
+        View.OnClickListener listenerAzioni = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int mossa = -1;
+                int carta = -1;
+                switch (v.getId()) {
+                    case R.id.buttonPasso:
+                        mossa = GameManager.PASSA;
+                        break;
+                    case R.id.buttonChiama:
+                        mossa = GameManager.CHIAMA;
+                        break;
+                    case R.id.buttonSola:
+                        mossa = GameManager.SOLA;
+                        break;
+                }
+                new GiocaOperation().doCall(gameManager.getIdPartita(), mossa, carta, new IntegerCallback() {
+                    @Override
+                    public void onResponse(Integer response) {
+                        cambiaGiocatoreAttivo(response);
+                    }
+                });
+            }
+        };
+        root.findViewById(R.id.buttonPasso).setOnClickListener(listenerAzioni);
+        root.findViewById(R.id.buttonChiama).setOnClickListener(listenerAzioni);
+        root.findViewById(R.id.buttonSola).setOnClickListener(listenerAzioni);
         return true;
     }
 
@@ -159,8 +188,18 @@ public class SecondFragment extends Fragment {
     }
 
     private void startGame(ProgressBar progressBar) {
-        Timer timer = new Timer();
+        avviaTimer(progressBar);
+    }
+
+    private void avviaTimer(ProgressBar progressBar) {
         timer.schedule(new SecondFragment.TaskGetTimeForAction(progressBar),0,1000);
+    }
+
+    private void stoppaTimer() {
+        timer.cancel();
+    }
+
+    private void cambiaGiocatoreAttivo(Integer response) {
     }
 
     private class TaskGetTimeForAction extends TimerTask {
@@ -177,12 +216,13 @@ public class SecondFragment extends Fragment {
                 @Override
                 public void onResponse(Integer response) {
                     if(response < 0)
-                        SecondFragment.TaskGetTimeForAction.this.cancel();
+                        stoppaTimer();
                     else
                         progressBar.setProgress(response);
-                    System.out.println(response);
                 }
             });
         }
     }
+
+
 }
