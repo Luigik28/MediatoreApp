@@ -3,13 +3,12 @@ package it.imerc.mediatore.gui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -17,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -25,7 +24,6 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.LinkedList;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,6 +32,8 @@ import it.imerc.mediatore.Game.Giocatore;
 import it.imerc.mediatore.R;
 import it.imerc.mediatore.wsClient.operations.AddGiocatoreOperation;
 import it.imerc.mediatore.wsClient.operations.GetGiocatoriOperation;
+import it.imerc.mediatore.wsClient.operations.StartGameOperation;
+import it.imerc.mediatore.wsClient.operations.callback.BooleanCallback;
 import it.imerc.mediatore.wsClient.operations.callback.GiocatoreCallback;
 import it.imerc.mediatore.wsClient.operations.callback.GiocatoriCallback;
 import it.imerc.mediatore.wsClient.operations.callback.StringCallback;
@@ -44,6 +44,7 @@ public class FirstFragment extends Fragment {
     private ProgressBar progressBar;
     private TextView textProgress;
     private final String textGiocatori = "Numero Giocatori: ";
+    private Button buttonStartGame;
 
     @Override
     public View onCreateView(
@@ -58,9 +59,10 @@ public class FirstFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         final EditText editTextHost = view.findViewById(R.id.host);
         final EditText editTextGame = view.findViewById(R.id.game);
-        ((AppCompatActivity)requireActivity()).getSupportActionBar().show();
+        getSupportActionBar().show();
         progressBar = view.findViewById(R.id.progressBar);
         textProgress = view.findViewById(R.id.textViewProgress);
+        buttonStartGame = view.findViewById(R.id.buttonStartGame);
         final Spinner playersSpinner = view.findViewById(R.id.numberSpinner);
         final View thisView = view;
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
@@ -68,7 +70,6 @@ public class FirstFragment extends Fragment {
             public void onClick(final View view) {
                 //TODO: Aggiungere controlli di inizio partita prima di effettuare la chiamata (es. stringa vuota)
                 hideKeyboard(requireActivity());
-                progressBar.setVisibility(View.VISIBLE);
                 final String giocatore = editTextHost.getText().toString();
                 final String partita = editTextGame.getText().toString();
                 gameManager.creaPartita(partita, giocatore, new StringCallback() {
@@ -86,7 +87,6 @@ public class FirstFragment extends Fragment {
                                 .setAction("Riprova", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        progressBar.setVisibility(View.VISIBLE);
                                         gameManager.creaPartita(partita, giocatore, new StringCallback() {
                                             @Override
                                             public void onResponse(String response) {
@@ -108,27 +108,36 @@ public class FirstFragment extends Fragment {
 
             }
         });
+        buttonStartGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new StartGameOperation().doCall(gameManager.getIdPartita(), new BooleanCallback() {
+
+                    @Override
+                    public void onResponse(Boolean response) {
+                        if(response)
+                            fineConfigurazione();
+                        else
+                            Toast.makeText(requireContext(),"Errore nella creazione della partita",Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        SharedPreferences p = requireContext().getSharedPreferences(getString(R.string.preferencesKey),Context.MODE_PRIVATE);
-        Log.d("AddNewRecord", "getAll: " + p.getAll());
-        Log.d("AddNewRecord", "Size: " + p.getAll().size());
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        SharedPreferences p = requireContext().getSharedPreferences(getString(R.string.preferencesKey),Context.MODE_PRIVATE);
-        Log.d("AddNewRecord", "getAll: " + p.getAll());
-        Log.d("AddNewRecord", "Size: " + p.getAll().size());
     }
 
-//    public ActionBar getSupportActionBar() {
-//        return ((AppCompatActivity) requireActivity()).getSupportActionBar();
-//    }
+    public ActionBar getSupportActionBar() {
+        return ((AppCompatActivity) requireActivity()).getSupportActionBar();
+    }
 
     private void onGameCreated() {
         progressBar.setVisibility(View.VISIBLE);
@@ -140,9 +149,7 @@ public class FirstFragment extends Fragment {
 
     public void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        //Find the currently focused view, so we can grab the correct window token from it.
         View view = activity.getCurrentFocus();
-        //If no view currently has focus, create a new one, just so we can grab a window token from it
         if (view != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
@@ -174,11 +181,16 @@ public class FirstFragment extends Fragment {
                     editText.setText(textGiocatori.toString());
                     if(response.size() == gameManager.getnGiocatori()) {
                         TaskGetGiocatori.this.cancel();
-                        NavHostFragment.findNavController(FirstFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
+                        progressBar.setVisibility(View.INVISIBLE);
+                        buttonStartGame.setVisibility(View.VISIBLE);
                     }
                 }
             });
         }
+    }
+
+    private void fineConfigurazione() {
+        NavHostFragment.findNavController(FirstFragment.this).navigate(R.id.action_FirstFragment_to_SecondFragment, gameManager.getBundle());
     }
 
 
@@ -191,4 +203,5 @@ public class FirstFragment extends Fragment {
                 }
             });
     }
+
 }

@@ -29,9 +29,9 @@ public abstract class MediatoreOperation<T> {
 
     private static final String SOAP_ADDRESS_NO_URL = "/Mediatore/services/GameService?wsdl";
 
-    private SoapObject request;
+    private final SoapObject request;
 
-    private SoapSerializationEnvelope envelope;
+    private final SoapSerializationEnvelope envelope;
 
     public abstract String getOperationName();
 

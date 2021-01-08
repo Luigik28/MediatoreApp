@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/tavolo"
+    android:id="@+id/SecondFragment"
     tools:context=".gui.fragments.SecondFragment">
 
     <HorizontalScrollView
@@ -60,19 +61,92 @@
             android:layout_width="80dp"
             android:layout_height="130dp"
             android:src="@drawable/dorso" />
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/textHost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:fontFamily="casual"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <it.imerc.mediatore.util.VerticalTextView
+        android:id="@+id/textGiocatore2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:fontFamily="casual"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:direction="uptodown"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <it.imerc.mediatore.util.VerticalTextView
+        android:id="@+id/textGiocatore3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:fontFamily="casual"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:direction="downtoup"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textGiocatore4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="casual"
+        android:rotation="180"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonPasso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PASSA"
+        app:layout_constraintEnd_toStartOf="@+id/buttonChiama"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonChiama" />
+
+    <Button
+        android:id="@+id/buttonChiama"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CHIAMA"
+        app:layout_constraintBottom_toTopOf="@+id/textHost"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <Button
+        android:id="@+id/buttonSola"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SOLA"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonChiama"
+        app:layout_constraintTop_toTopOf="@+id/buttonChiama" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

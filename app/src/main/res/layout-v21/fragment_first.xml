@@ -11,9 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:text="Nuova partita"
+        android:text="@string/nuova_partita"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Giocatori"
+        android:text="@string/giocatori"
         android:textColor="@color/design_default_color_on_secondary"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/game"
@@ -61,7 +60,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:entries="@array/players_array"
         android:spinnerMode="dropdown"
         app:layout_constraintStart_toEndOf="@+id/textView"
@@ -72,7 +70,6 @@
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:text="@string/create_game"
         app:layout_constraintBottom_toBottomOf="@+id/numberSpinner"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="24dp"
         android:layout_marginTop="24dp"
-        android:text="Lobby"
+        android:text="@string/lobby"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/label_nuova_partita"
@@ -103,7 +100,7 @@
         android:id="@+id/reload_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ricarica"
+        android:text="@string/ricarica"
         app:layout_constraintEnd_toEndOf="@+id/button_first"
         app:layout_constraintTop_toTopOf="@+id/label_lobby" />
 
@@ -128,5 +125,15 @@
         app:layout_constraintEnd_toEndOf="@+id/progressBar"
         app:layout_constraintStart_toStartOf="@+id/progressBar"
         app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+    <Button
+        android:id="@+id/buttonStartGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/inizia"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewProgress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
