@@ -13,17 +13,20 @@ public class GameManager implements Serializable {
 
     public static String GAME_MANAGER = "gameManager";
 
-    public static int PASSA = 1;
-    public static int CHIAMA = 2;
-    public static int SOLA = 3;
-    public static int GIOCA_CARTA = 4;
+    public static final int TIMEOUT = 0;
+    public static final int PASSA = -1;
+    public static final int CHIAMA = -2;
+    public static final int SOLA = -3;
+
+    public static final int MAX_TEMPO = 30000;
 
     public static GameManager gameManager = new GameManager();
     private Giocatore io;
     private String idPartita;
     private boolean monte;
     private int nGiocatori = 0;
-    private int idGiocatore;
+    private int giocatoreAttivo;
+    public int myId;
 
     private GameManager() {}
 
@@ -39,8 +42,12 @@ public class GameManager implements Serializable {
         this.idPartita = id;
     }
 
-    public Giocatore getHost() {
+    public Giocatore getGiocatore() {
         return io;
+    }
+
+    public boolean isMyTurn() {
+        return myId == getGiocatoreAttivo();
     }
 
     public Bundle getBundle() {
@@ -53,9 +60,11 @@ public class GameManager implements Serializable {
         return (GameManager) bundle.getSerializable(GameManager.GAME_MANAGER);
     }
 
-    public void creaPartita(String partita, String giocatore, final StringCallback callback) {
+    public void creaPartita(String partita, String giocatore, int nGiocatori, final StringCallback callback) {
         io = new Giocatore(giocatore);
-        setIdGiocatore(0);
+        setnGiocatori(nGiocatori);
+        setGiocatoreAttivo(0);
+        myId = getGiocatoreAttivo();
         new CreaPartitaOperation().doCall(partita, giocatore, new StringCallback() {
             @Override
             public void onResponse(String response) {
@@ -99,11 +108,15 @@ public class GameManager implements Serializable {
         this.nGiocatori = nGiocatori;
     }
 
-    public void setIdGiocatore(int idGiocatore) {
-        this.idGiocatore = idGiocatore;
+    public void setGiocatoreAttivo(int giocatoreAttivo) {
+        this.giocatoreAttivo = giocatoreAttivo;
     }
 
-    public int getIdGiocatore() {
-        return idGiocatore;
+    public int getGiocatoreAttivo() {
+        return giocatoreAttivo;
+    }
+
+    public int getMaxTempo() {
+        return MAX_TEMPO;
     }
 }

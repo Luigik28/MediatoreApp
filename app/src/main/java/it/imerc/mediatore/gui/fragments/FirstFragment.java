@@ -3,6 +3,7 @@ package it.imerc.mediatore.gui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,21 +63,21 @@ public class FirstFragment extends Fragment {
         progressBar = view.findViewById(R.id.progressBar);
         textProgress = view.findViewById(R.id.textViewProgress);
         buttonStartGame = view.findViewById(R.id.buttonStartGame);
-        final Spinner playersSpinner = view.findViewById(R.id.numberSpinner);
+        final Spinner numberSpinner = view.findViewById(R.id.numberSpinner);
         final View thisView = view;
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 //TODO: Aggiungere controlli di inizio partita prima di effettuare la chiamata (es. stringa vuota)
                 hideKeyboard(requireActivity());
+                progressBar.setVisibility(View.VISIBLE);
                 final String giocatore = editTextHost.getText().toString();
                 final String partita = editTextGame.getText().toString();
-                gameManager.creaPartita(partita, giocatore, new StringCallback() {
+                final int nGiocatori = Integer.parseInt(numberSpinner.getSelectedItem().toString());
+                gameManager.creaPartita(partita, giocatore, nGiocatori, new StringCallback() {
                     @Override
                     public void onResponse(String response) {
-                        gameManager.setIdPartita(response);
-                        gameManager.setnGiocatori(Integer.parseInt(playersSpinner.getSelectedItem().toString()));
-                        onGameCreated();
+                        onGameCreated(response);
                     }
 
                     @Override
@@ -86,12 +87,10 @@ public class FirstFragment extends Fragment {
                                 .setAction("Riprova", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        gameManager.creaPartita(partita, giocatore, new StringCallback() {
+                                        gameManager.creaPartita(partita, giocatore, nGiocatori, new StringCallback() {
                                             @Override
                                             public void onResponse(String response) {
-                                                gameManager.setIdPartita(response);
-                                                gameManager.setnGiocatori(Integer.parseInt(playersSpinner.getSelectedItem().toString()));
-                                                onGameCreated();
+                                                onGameCreated(response);
                                             }
 
                                             @Override
@@ -138,12 +137,18 @@ public class FirstFragment extends Fragment {
         return ((AppCompatActivity) requireActivity()).getSupportActionBar();
     }
 
-    private void onGameCreated() {
-        progressBar.setVisibility(View.VISIBLE);
+    private void onGameCreated(String response) {
+        gameManager.setIdPartita(response);
+        gameManager.setGiocatoreAttivo(0);
         textProgress.setVisibility(View.VISIBLE);
+        log();
         Timer timer = new Timer();
         timer.schedule(new TaskGetGiocatori(textProgress),500,1000);
         createGameTest();
+    }
+
+    private void onGameLoaded() {
+        //TODO:
     }
 
     public void hideKeyboard(Activity activity) {
@@ -152,6 +157,13 @@ public class FirstFragment extends Fragment {
         if (view != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    public void log() {
+        Log.d("GameManager", "id: " + gameManager.getIdPartita());
+        Log.d("GameManager", "io: " + gameManager.getGiocatore().getNome());
+        Log.d("GameManager", "nG: " + gameManager.getnGiocatori());
+        Log.d("GameManager", "gA: " + gameManager.getGiocatoreAttivo());
     }
 
     private class TaskGetGiocatori extends TimerTask {

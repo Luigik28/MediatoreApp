@@ -58,6 +58,7 @@ public abstract class MediatoreOperation<T> {
             localServer = "http://";
             localServer += sharedPreferences.getString(Utility.ipAddressKey, context.getString(R.string.defaultIp));
             localServer += ":" + sharedPreferences.getString(Utility.portAddressKey, context.getString(R.string.defaultPort));
+            localServer += "/Mediatore";
             MediatoreOperation.setLocalServer(localServer);
         }
         timeout = sharedPreferences.getInt(Utility.timeoutKey, timeout);

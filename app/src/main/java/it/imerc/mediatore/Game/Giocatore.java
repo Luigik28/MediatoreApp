@@ -5,8 +5,10 @@ import java.io.Serializable;
 public class Giocatore implements Serializable {
 
     private static final long serialVersionUID = 8197106193737329087L;
-    private Mazzo mano;
+    private final Mazzo mano;
     private String nome;
+    private int ultimaMossa;
+    private boolean isActive;
 
     public Giocatore() {
         this.mano = new Mazzo();
@@ -41,6 +43,22 @@ public class Giocatore implements Serializable {
 
     public Mazzo getMano() {
         return mano;
+    }
+
+    public int getUltimaMossa() {
+        return ultimaMossa;
+    }
+
+    public void setUltimaMossa(int ultimaMossa) {
+        this.ultimaMossa = ultimaMossa;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
     @Override

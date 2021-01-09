@@ -10,8 +10,8 @@ public class GiocaOperation extends MediatoreOperation<Integer> {
         return "gioca";
     }
 
-    public void doCall(String id, int mossa, int carta, IntegerCallback callback) {
-        this.addProperty("id", id).addProperty("mossa", mossa).addProperty("carta", carta);
+    public void doCall(String id, int mossa, IntegerCallback callback) {
+        this.addProperty("id", id).addProperty("mossa", mossa);
         super.call(callback);
     }
 }
