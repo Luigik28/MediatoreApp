@@ -82,6 +82,12 @@ public abstract class MediatoreOperation<T> {
         new SoapCallTask(callback).execute(httpTransport);
     }
 
+    protected <Z extends SoapCallback<T>> void call(Z callback, int timeout) {
+        envelope.setOutputSoapObject(request);
+        HttpTransportSE httpTransport = new HttpTransportSE(getSoapAddress(), timeout);
+        new SoapCallTask(callback).execute(httpTransport);
+    }
+
     @SuppressLint("StaticFieldLeak")
     private class SoapCallTask extends AsyncTask<HttpTransportSE, Void, AttributeContainer> {
 

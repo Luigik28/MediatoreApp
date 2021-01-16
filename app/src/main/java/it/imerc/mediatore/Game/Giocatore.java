@@ -9,6 +9,7 @@ public class Giocatore implements Serializable {
     private String nome;
     private int ultimaMossa;
     private boolean isActive;
+    private int tempoRimasto;
 
     public Giocatore() {
         this.mano = new Mazzo();
@@ -59,6 +60,14 @@ public class Giocatore implements Serializable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public int getTempoRimasto() {
+        return tempoRimasto;
+    }
+
+    public void setTempoRimasto(int tempoRimasto) {
+        this.tempoRimasto = tempoRimasto;
     }
 
     @Override

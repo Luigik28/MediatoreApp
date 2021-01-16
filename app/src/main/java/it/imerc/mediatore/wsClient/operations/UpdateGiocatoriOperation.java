@@ -17,4 +17,9 @@ public class UpdateGiocatoriOperation extends MediatoreOperation<LinkedList<Gioc
         this.addProperty("id", id);
         super.call(callback);
     }
+
+    public void doCall(String id, GiocatoriCallback callback, int timeout) {
+        this.addProperty("id", id);
+        super.call(callback, timeout);
+    }
 }

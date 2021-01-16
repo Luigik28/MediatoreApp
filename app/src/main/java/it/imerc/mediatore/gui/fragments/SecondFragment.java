@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -192,8 +193,8 @@ public class SecondFragment extends Fragment {
 
     private void startGame(ProgressBar progressBar) {
         cambiaGiocatoreAttivo(gameManager.getGiocatoreAttivo());
-        avviaTimer(progressBar);
-        new Timer().schedule(new SecondFragment.TaskGetPlayersUpdate(),0,1000);
+        Timer t = new Timer();
+        t.schedule(new SecondFragment.TaskGetPlayersUpdate(progressBar),0,1000);
     }
 
     private void gioca(int mossa) {
@@ -211,7 +212,7 @@ public class SecondFragment extends Fragment {
                 mossa = GameManager.SOLA;
                 break;
             case GameManager.TIMEOUT:
-                break;
+                return; 
         }
         new GiocaOperation().doCall(gameManager.getIdPartita(), mossa, new IntegerCallback() {
             @Override
@@ -219,10 +220,6 @@ public class SecondFragment extends Fragment {
                 cambiaGiocatoreAttivo(response);
             }
         });
-    }
-
-    private void avviaTimer(ProgressBar progressBar) {
-        new Timer().schedule(new SecondFragment.TaskGetTimeForAction(progressBar),0,1000);
     }
 
     private void timeout() {
@@ -267,31 +264,12 @@ public class SecondFragment extends Fragment {
         gameManager.setGiocatoreAttivo(response);
     }
 
-    private class TaskGetTimeForAction extends TimerTask {
+    private class TaskGetPlayersUpdate extends TimerTask {
 
         ProgressBar progressBar;
 
-        public TaskGetTimeForAction(ProgressBar progressBar) {
+        public TaskGetPlayersUpdate(ProgressBar progressBar) {
             this.progressBar = progressBar;
-        }
-
-        @Override
-        public void run() {
-            new GetTempoRimasto().doCall(gameManager.getIdPartita(), new IntegerCallback() {
-                @Override
-                public void onResponse(Integer response) {
-                    if(response < 0)
-                        timeout();
-                    else
-                        progressBar.setProgress(response);
-                }
-            });
-        }
-    }
-
-    private class TaskGetPlayersUpdate extends TimerTask {
-
-        public TaskGetPlayersUpdate() {
         }
 
         @Override
@@ -303,8 +281,12 @@ public class SecondFragment extends Fragment {
                     for(int i = 0; i < response.size(); i++) {
                         Giocatore g = response.get(i);
                         Log.d("Debug","Giocatore " + i + ": " + g.isActive());
-                        if(g.isActive() && i != gameManager.getGiocatoreAttivo())
-                            cambiaGiocatoreAttivo(i);
+                        if(g.isActive()) {
+                            progressBar.setProgress(g.getTempoRimasto());
+                            if(i != gameManager.getGiocatoreAttivo())
+                                cambiaGiocatoreAttivo(i);
+                        }
+
                     }
                     drawUpdate(response);
                 }
